@@ -1,0 +1,100 @@
+﻿<Window x:Class="DBUP.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DBUP"
+        mc:Ignorable="d"
+        Title="BP Software" Height="600" Width="1000" MinHeight="600" MinWidth="1200" Icon="Image/bigball.png" Closing="Window_Closing">
+    <Window.Resources>
+        <ControlTemplate x:Key="ButtonTemplateCorner" TargetType="Button">
+            <Border Name="border"  CornerRadius="3"  Background="#CBE6E0" BorderBrush="#578E84" BorderThickness="3">
+                <ContentPresenter  RecognizesAccessKey="True" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+            </Border>
+        </ControlTemplate>
+
+
+        <ControlTemplate x:Key="ButtonTemplate" TargetType="Button">
+            <Border Name="border" TextBlock.Foreground="#6DB2A5">
+                <ContentPresenter  RecognizesAccessKey="True" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="border" Property="TextBlock.Foreground" Value="white"></Setter>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="border" Property="TextBlock.Foreground" Value="Yellow"></Setter>
+                </Trigger>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter TargetName="border" Property="TextBlock.Foreground" Value="white"></Setter>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+    </Window.Resources>
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="409*"/>
+        </Grid.RowDefinitions>
+        <Frame x:Name="frame" Content="" Margin="0,0,0,0" Grid.Row="2" Background="#CBE6E0" NavigationUIVisibility="Hidden"/>
+        <Grid Grid.Row="1" Background="#303030">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="145"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="btnAssessment" Content="Самооценка" Grid.Column="0" Template="{StaticResource ButtonTemplate}" Background="#FF303030" Foreground="#6DB2A5" FontWeight="Bold" Click="btnAssessment_Click">
+
+            </Button>
+            <Button x:Name="btnDiagram" Content="Диаграмма" Grid.Column="1" Template="{StaticResource ButtonTemplate}" Background="#FF303030" Foreground="#6DB2A5" FontWeight="Bold" Click="btnDiagram_Click">
+
+            </Button>
+            <Button x:Name="btnResult" Content="Результаты оценки" Grid.Column="2" Template="{StaticResource ButtonTemplate}" Background="#FF303030" Foreground="#6DB2A5" FontWeight="Bold" Click="btnResult_Click">
+            </Button>
+        </Grid>
+
+        <Grid Grid.Row="0" Background="#6DB2A5">
+
+            <Label Content="BP Security Evaluation Software" Foreground="White" HorizontalAlignment="Left" Margin="20,26,0,0" VerticalAlignment="Top" Height="49" Width="431" FontSize="30"/>
+            <Label Content="СТО БР ИББС-1.2-2014" Foreground="#303030" HorizontalAlignment="Right" Margin="0,26,10,0" VerticalAlignment="Top" Height="30" Width="170" FontSize="15"/>
+            <Button x:Name="btnSendMail" Foreground="#303030" HorizontalAlignment="Right" Margin="0,0,15,5" VerticalAlignment="Bottom" Width="165" Content="Написать нам" Template="{StaticResource ButtonTemplateCorner}" Click="btnSendMail_Click"></Button>
+
+            <Menu VerticalAlignment="Top" Height="20" Background="#CBE6E0" Foreground="#303030" FontWeight="Medium">
+                <MenuItem Header="Файл" Width="60" Height="20">
+                    <MenuItem x:Name="menuItemNewAssessment" Header="Начать новую оценку" Click="menuItemNewAssessment_Click" >
+                        <MenuItem.Icon>
+                            <Image Source="Image/folder.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem Header="Сохранить файл оценки" Click="menuItemSaveAssessment_Click">
+                        <MenuItem.Icon>
+                            <Image Source="Image/diskette.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Header="Отмена">
+                        <MenuItem.Icon>
+                            <Image Source="Image/back.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="Справка">
+                    <MenuItem Header="Руководство пользователя">
+                        <MenuItem.Icon>
+                            <Image Source="Image/book.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="About" Header="О программе" Click="About_Click" >
+                        <MenuItem.Icon>
+                            <Image Source="Image/question.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
+        </Grid>
+    </Grid>
+</Window>
