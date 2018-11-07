@@ -21,4 +21,22 @@ namespace DBUP
     {
         public string message { get; set; }
     }
+
+    class Profile
+    {
+        public string full_name { get; set; }
+        public int role { get; set; }
+        public string organisation_name { get; set; }
+        public string address { get; set; }
+    }
+
+    class Assessments
+    {
+        public int assessment_id { get; set; }
+        public string audit_object { get; set; }
+        public string address { get; set; }
+        public int auditor_id { get; set; }
+        public string assessment_link { get; set; }
+        public int created_at { get; set; }
+    }
 }

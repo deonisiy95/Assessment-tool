@@ -39,20 +39,22 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="409*"/>
         </Grid.RowDefinitions>
-        <Frame x:Name="frame" Content="" Margin="0,0,0,0" Grid.Row="2" Background="#CBE6E0" NavigationUIVisibility="Hidden"/>
+        <Frame x:Name="frame" Content="" Margin="0,0,0,0" Grid.Row="2" Background="#CBE6E0" NavigationUIVisibility="Hidden" Navigated="frame_Navigated"/>
         <Grid Grid.Row="1" Background="#303030">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120"/>
                 <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="120"/>
                 <ColumnDefinition Width="145"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="btnAssessment" Content="Самооценка" Grid.Column="0" Template="{StaticResource ButtonTemplate}" Background="#FF303030" Foreground="#6DB2A5" FontWeight="Bold" Click="btnAssessment_Click">
+            <Button x:Name="btnProfile" Content="Профиль" Grid.Column="0" Template="{StaticResource ButtonTemplate}" Background="#FF303030" Foreground="#6DB2A5" FontWeight="Bold" Click="btnProfile_Click">
+            </Button>
+            <Button x:Name="btnAssessment" Content="Самооценка" Grid.Column="1" Template="{StaticResource ButtonTemplate}" Background="#FF303030" Foreground="#6DB2A5" FontWeight="Bold" Click="btnAssessment_Click">
+            </Button>
+            <Button x:Name="btnDiagram" Content="Диаграмма" Grid.Column="2" Template="{StaticResource ButtonTemplate}" Background="#FF303030" Foreground="#6DB2A5" FontWeight="Bold" Click="btnDiagram_Click">
 
             </Button>
-            <Button x:Name="btnDiagram" Content="Диаграмма" Grid.Column="1" Template="{StaticResource ButtonTemplate}" Background="#FF303030" Foreground="#6DB2A5" FontWeight="Bold" Click="btnDiagram_Click">
-
-            </Button>
-            <Button x:Name="btnResult" Content="Результаты оценки" Grid.Column="2" Template="{StaticResource ButtonTemplate}" Background="#FF303030" Foreground="#6DB2A5" FontWeight="Bold" Click="btnResult_Click">
+            <Button x:Name="btnResult" Content="Результаты оценки" Grid.Column="3" Template="{StaticResource ButtonTemplate}" Background="#FF303030" Foreground="#6DB2A5" FontWeight="Bold" Click="btnResult_Click">
             </Button>
         </Grid>
 
@@ -70,7 +72,12 @@
                         </MenuItem.Icon>
                     </MenuItem>
 
-                    <MenuItem Header="Сохранить файл оценки" Click="menuItemSaveAssessment_Click">
+                    <MenuItem Header="Сохранить файл оценки на диск" Click="menuItemSaveAssessment_Click">
+                        <MenuItem.Icon>
+                            <Image Source="Image/diskette.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Загрузить файл оценки на сервер" Click="MenuItemUpload_Click">
                         <MenuItem.Icon>
                             <Image Source="Image/diskette.png" />
                         </MenuItem.Icon>

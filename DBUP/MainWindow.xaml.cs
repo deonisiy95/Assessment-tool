@@ -18,6 +18,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using Newtonsoft.Json;
+using System.Collections.Specialized;
+using xNet;
 
 namespace DBUP
 {
@@ -49,8 +51,6 @@ namespace DBUP
             // получаем информацию залогинен ли пользователь
             string response_str = API.call("global/doStart");
 
-            MessageBox.Show(response_str);
-
             // преобразуем в объект
             Response<doStart> response = JsonConvert.DeserializeObject<Response<doStart>>(response_str);
 
@@ -65,7 +65,7 @@ namespace DBUP
             }
 
             InitializeComponent();
-            frame.NavigationService.Navigate(new Uri("MainPage.xaml", UriKind.Relative));
+            frame.NavigationService.Navigate(new Uri("ProfilePage.xaml", UriKind.Relative));
             btnAssessment.IsEnabled = false;
             btnDiagram.IsEnabled = false;
             btnResult.IsEnabled = false;
@@ -147,124 +147,7 @@ namespace DBUP
             {
                 try
                 {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    StringWriter stringWriter = new StringWriter(stringBuilder);
-                    //XmlTextWriter writer = new XmlTextWriter(currentPath, System.Text.Encoding.UTF8);
-                    XmlTextWriter writer = new XmlTextWriter(stringWriter);
-                    writer.WriteStartDocument(true);
-                    writer.Formatting = System.Xml.Formatting.Indented;
-                    writer.Indentation = 2;
-                    writer.WriteStartElement("Table");
-
-                    for (int i = 0; i < Assessment.questions.Count; i++)
-                    {
-                        writer.WriteStartElement("question");
-                        writer.WriteStartElement("group");
-                        writer.WriteString(Assessment.questions[i].group.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("number");
-                        writer.WriteString(Assessment.questions[i].number.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("category");
-                        writer.WriteString(Assessment.questions[i].category.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("value");
-                        writer.WriteString(Assessment.questions[i].value.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("mandatory");
-                        writer.WriteString(Assessment.questions[i].mandatory.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("answered");
-                        writer.WriteString(Assessment.questions[i].answered.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("overlook");
-                        writer.WriteString(Assessment.questions[i].overlook.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("question_value");
-                        writer.WriteString(Assessment.questions[i].question.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("documentation");
-                        writer.WriteString(Assessment.questions[i].documentation.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("execution");
-                        writer.WriteString(Assessment.questions[i].execution.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("secondaryOuestion1");
-                        writer.WriteStartElement("answered");
-                        writer.WriteString(Assessment.questions[i].secondaryOuestions[0].answered.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("overlook");
-                        writer.WriteString(Assessment.questions[i].secondaryOuestions[0].overlook.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("documentation");
-                        writer.WriteString(Assessment.questions[i].secondaryOuestions[0].documentation.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("execution");
-                        writer.WriteString(Assessment.questions[i].secondaryOuestions[0].execution.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("secondaryOuestion2");
-                        writer.WriteStartElement("answered");
-                        writer.WriteString(Assessment.questions[i].secondaryOuestions[1].answered.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("overlook");
-                        writer.WriteString(Assessment.questions[i].secondaryOuestions[1].overlook.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("documentation");
-                        writer.WriteString(Assessment.questions[i].secondaryOuestions[1].documentation.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("execution");
-                        writer.WriteString(Assessment.questions[i].secondaryOuestions[1].execution.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("secondaryOuestion3");
-                        writer.WriteStartElement("answered");
-                        writer.WriteString(Assessment.questions[i].secondaryOuestions[2].answered.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("overlook");
-                        writer.WriteString(Assessment.questions[i].secondaryOuestions[2].overlook.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("documentation");
-                        writer.WriteString(Assessment.questions[i].secondaryOuestions[2].documentation.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("execution");
-                        writer.WriteString(Assessment.questions[i].secondaryOuestions[2].execution.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteEndElement();
-                        writer.WriteEndElement();
-                    }
-
-                    writer.WriteStartElement("assessmentData");
-                    writer.WriteStartElement("NameAssessment");
-                    writer.WriteString(MainPage.assessmentData["NameAssessment"]);
-                    writer.WriteEndElement();
-                    writer.WriteStartElement("NameObject");
-                    writer.WriteString(MainPage.assessmentData["NameObject"]);
-                    writer.WriteEndElement();
-                    writer.WriteStartElement("Address");
-                    writer.WriteString(MainPage.assessmentData["Address"]);
-                    writer.WriteEndElement();
-                    writer.WriteStartElement("Auditor");
-                    writer.WriteString(MainPage.assessmentData["Auditor"]);
-                    writer.WriteEndElement();
-                    writer.WriteEndElement();
-                    writer.WriteStartElement("answeredGroup");
-                    for (int i = 0; i < Assessment.answeredGroup.Length; i++)
-                    {
-                        writer.WriteStartElement("item" + i.ToString());
-                        writer.WriteString(Assessment.answeredGroup[i].ToString());
-                        writer.WriteEndElement();
-                    }
-                    writer.WriteEndElement();
-                    writer.WriteEndDocument();
-                    writer.Close();
-
-                    XmlDocument xml = new XmlDocument();
-                    xml.LoadXml(stringBuilder.ToString());
-
-                    MemoryStream memoryStream = new MemoryStream();
-                    xml.Save(memoryStream);
-                    byte[] bytesFile = Encrypt(memoryStream.ToArray(), password+login);
+                    byte[] bytesFile = GetFileAssessment();
                     File.WriteAllBytes(currentPath, bytesFile);
                     return true;
                 }
@@ -277,6 +160,185 @@ namespace DBUP
             else
             {
                 return false;
+            }
+        }
+
+        byte[] GetFileAssessment()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            StringWriter stringWriter = new StringWriter(stringBuilder);
+            XmlTextWriter writer = new XmlTextWriter(stringWriter);
+            writer.WriteStartDocument(true);
+            writer.Formatting = System.Xml.Formatting.Indented;
+            writer.Indentation = 2;
+            writer.WriteStartElement("Table");
+
+            for (int i = 0; i < Assessment.questions.Count; i++)
+            {
+                writer.WriteStartElement("question");
+                writer.WriteStartElement("group");
+                writer.WriteString(Assessment.questions[i].group.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("number");
+                writer.WriteString(Assessment.questions[i].number.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("category");
+                writer.WriteString(Assessment.questions[i].category.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("value");
+                writer.WriteString(Assessment.questions[i].value.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("mandatory");
+                writer.WriteString(Assessment.questions[i].mandatory.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("answered");
+                writer.WriteString(Assessment.questions[i].answered.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("overlook");
+                writer.WriteString(Assessment.questions[i].overlook.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("question_value");
+                writer.WriteString(Assessment.questions[i].question.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("documentation");
+                writer.WriteString(Assessment.questions[i].documentation.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("execution");
+                writer.WriteString(Assessment.questions[i].execution.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("secondaryOuestion1");
+                writer.WriteStartElement("answered");
+                writer.WriteString(Assessment.questions[i].secondaryOuestions[0].answered.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("overlook");
+                writer.WriteString(Assessment.questions[i].secondaryOuestions[0].overlook.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("documentation");
+                writer.WriteString(Assessment.questions[i].secondaryOuestions[0].documentation.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("execution");
+                writer.WriteString(Assessment.questions[i].secondaryOuestions[0].execution.ToString());
+                writer.WriteEndElement();
+                writer.WriteEndElement();
+                writer.WriteStartElement("secondaryOuestion2");
+                writer.WriteStartElement("answered");
+                writer.WriteString(Assessment.questions[i].secondaryOuestions[1].answered.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("overlook");
+                writer.WriteString(Assessment.questions[i].secondaryOuestions[1].overlook.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("documentation");
+                writer.WriteString(Assessment.questions[i].secondaryOuestions[1].documentation.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("execution");
+                writer.WriteString(Assessment.questions[i].secondaryOuestions[1].execution.ToString());
+                writer.WriteEndElement();
+                writer.WriteEndElement();
+                writer.WriteStartElement("secondaryOuestion3");
+                writer.WriteStartElement("answered");
+                writer.WriteString(Assessment.questions[i].secondaryOuestions[2].answered.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("overlook");
+                writer.WriteString(Assessment.questions[i].secondaryOuestions[2].overlook.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("documentation");
+                writer.WriteString(Assessment.questions[i].secondaryOuestions[2].documentation.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("execution");
+                writer.WriteString(Assessment.questions[i].secondaryOuestions[2].execution.ToString());
+                writer.WriteEndElement();
+                writer.WriteEndElement();
+                writer.WriteEndElement();
+            }
+
+            writer.WriteStartElement("assessmentData");
+            writer.WriteStartElement("NameAssessment");
+            writer.WriteString(MainPage.assessmentData["NameAssessment"]);
+            writer.WriteEndElement();
+            writer.WriteStartElement("NameObject");
+            writer.WriteString(MainPage.assessmentData["NameObject"]);
+            writer.WriteEndElement();
+            writer.WriteStartElement("Address");
+            writer.WriteString(MainPage.assessmentData["Address"]);
+            writer.WriteEndElement();
+            writer.WriteStartElement("Auditor");
+            writer.WriteString(MainPage.assessmentData["Auditor"]);
+            writer.WriteEndElement();
+            writer.WriteEndElement();
+            writer.WriteStartElement("answeredGroup");
+            for (int i = 0; i < Assessment.answeredGroup.Length; i++)
+            {
+                writer.WriteStartElement("item" + i.ToString());
+                writer.WriteString(Assessment.answeredGroup[i].ToString());
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+            writer.WriteEndDocument();
+            writer.Close();
+
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(stringBuilder.ToString());
+
+            MemoryStream memoryStream = new MemoryStream();
+            xml.Save(memoryStream);
+            return Encrypt(memoryStream.ToArray(), "admin123");
+        }
+
+        // функция загрузки файла на сервер
+        void UploadFileAssessment()
+        {
+            try
+            {
+                //// получим файл оценки в виде массива байт
+                byte[] bytesFile = GetFileAssessment();
+
+                //// создадим соединение
+                //System.Net.WebClient Client = new System.Net.WebClient();
+
+                //// добавим заголовки
+                //Client.Headers.Add("Content-Type", "binary/octet-stream");
+
+                //// составим путь к файлу
+                string path_file = Directory.GetCurrentDirectory() + "temp.dbup";
+
+                //NameValueCollection parameters = new NameValueCollection();
+                //parameters.Add("name", "123");
+                //parameters.Add("val", "xyz");
+
+                //Client.QueryString = parameters;
+
+                //// сохраним на диск
+                File.WriteAllBytes(path_file, bytesFile);
+
+                //// загрузим файл
+                //byte[] result = Client.UploadFile(Config.HOST + "/api/?api_method=assessment/tryUpload", "POST", path_file);
+
+                //// получим результат
+                //string result_string = System.Text.Encoding.UTF8.GetString(result, 0, result.Length);
+
+                //MessageBox.Show(result_string);
+
+                using (var request = new HttpRequest())
+                {
+                    var multipartContent = new MultipartContent()
+                    {
+                        {new StringContent("example"), "file_name"},
+                        {new FileContent(Directory.GetCurrentDirectory() + "temp.dbup"), "file", "1"}
+                    };
+
+                    // Отправляем запрос.
+                    HttpResponse response = request.Post(Config.HOST + "/api/?api_method=assessment/tryUpload", multipartContent);
+                    // Принимаем тело сообщения в виде строки.
+                    string content = response.ToString();
+
+                    MessageBox.Show(content);
+                }
+            }
+            catch(Exception e)
+            {
+
+                MessageBox.Show(e.Message);
+                MessageBox.Show("Ошибка загрузки файла на сервер");
             }
         }
 
@@ -661,6 +723,22 @@ namespace DBUP
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             log.WriteLog(6);
+        }
+
+        private void frame_Navigated(object sender, NavigationEventArgs e)
+        {
+
+        }
+
+        private void btnProfile_Click(object sender, RoutedEventArgs e)
+        {
+            frame.NavigationService.Navigate(new Uri("ProfilePage.xaml", UriKind.Relative));
+        }
+
+        private void MenuItemUpload_Click(object sender, RoutedEventArgs e)
+        {
+            // загрузим файл на сервер
+            UploadFileAssessment();
         }
     }
 }

@@ -95,9 +95,6 @@
             <Button x:Name="btnSelectFile1" Content="Выбрать файл" Grid.Column="0" Grid.Row="3" FontWeight="Medium" Margin="20,5,5,5" FontSize="13" Click="btnSelectFile_Click" Template="{StaticResource ButtonTemplateCorner}"/>
             <TextBox x:Name="txbOpenFile1" Grid.ColumnSpan="2" Grid.Row="2" Margin="20,5,20,5"/>
             <Button x:Name="btnOpen1" Content="Открыть" Grid.Column="1" Grid.Row="5" FontWeight="Medium" FontSize="13" Margin="0,0,20,15" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="150" Template="{StaticResource ButtonTemplateCorner}" Click="btnOpen_Click"/>
-
-            <Button x:Name="btnExit" Content="Выйти" Grid.Row="5" FontWeight="Medium" FontSize="13" Margin="0,0,15,15" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="100" Template="{StaticResource ButtonTemplateCorner}" Click="btnExit_Click"/>
-
         </Grid>
     </Grid>
 </Page>

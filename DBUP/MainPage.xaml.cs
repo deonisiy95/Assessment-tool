@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -86,12 +87,25 @@ namespace DBUP
             
         }
 
-        bool OpenQuestions(ref List<Question> questions, string path)
+        public static bool OpenQuestions(ref List<Question> questions, string path, bool link = false)
         {
             try
             {
-                byte[] bytesFile = File.ReadAllBytes(path);
-                MemoryStream ms = new MemoryStream(Decrypt(bytesFile, MainWindow.password+MainWindow.login));
+                byte[] bytesFile;
+
+                if (link)
+                {
+                    WebClient wc = new WebClient();
+                    using (MemoryStream stream = new MemoryStream(wc.DownloadData(path)))
+                    {
+                        bytesFile = stream.ToArray();
+                    }
+                }
+                else
+                {
+                    bytesFile = File.ReadAllBytes(path);
+                }
+                MemoryStream ms = new MemoryStream(Decrypt(bytesFile, "admin123"));
                 XmlDocument xDoc = new XmlDocument();
                 xDoc.Load(ms);
                 XmlElement xRoot = xDoc.DocumentElement;
@@ -240,9 +254,10 @@ namespace DBUP
                 }
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                MessageBox.Show("Не удается прочитать файл. Возможные причины: \n -Файл не является файлом сесии \n -Вы не владелец \n -Файл поврежден", "Внимание", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show(e.Message);
+               // MessageBox.Show("Не удается прочитать файл. Возможные причины: \n -Файл не является файлом сесии \n -Вы не владелец \n -Файл поврежден", "Внимание", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return false;
             }
         }
@@ -327,16 +342,6 @@ namespace DBUP
             return result;
         }
 
-        private void btnExit_Click(object sender, RoutedEventArgs e)
-        {
-            API.call("auth/doLogout");
-
-            // откроем окно входа
-            EnterWindow enter_window = new EnterWindow();
-            MainWindow mainWindow = (MainWindow)DBUP.App.Current.Windows[0];
-
-            enter_window.Show();
-            mainWindow.Close();
-        }
+        
     }
 }
