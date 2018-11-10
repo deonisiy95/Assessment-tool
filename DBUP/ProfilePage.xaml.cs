@@ -53,11 +53,11 @@ namespace DBUP
             // заполним поля
             for(int i = 0; i < r.response.Count; i++)
             {
-                AddToListBox(r.response[i].audit_object, r.response[i].assessment_link);
+                AddToListBox(r.response[i].audit_object, r.response[i].assessment_link, r.response[i].assessment_id);
             }
         }
 
-        void AddToListBox(string content, string assessment_link)
+        void AddToListBox(string content, string assessment_link, int assessment_id)
         {
             BitmapImage bitmap = new BitmapImage(new Uri("pack://application:,,,/Image/ball.png"));
             Image img = new Image
@@ -75,7 +75,7 @@ namespace DBUP
             {
                 Orientation = Orientation.Horizontal,
                 Height = 25,
-                Tag = assessment_link
+                Tag = new string[] { assessment_link, assessment_id.ToString() }
             };
             
             stp.Children.Add(img);
@@ -115,22 +115,11 @@ namespace DBUP
         private void btnSelectFile_Click(object sender, RoutedEventArgs e)
         {
 
-            //StackPanel stack = (StackPanel)lbxAssessmentList.SelectedItem;
-            //    string assessment_link = stack.Tag.ToString();
-
-            //WebClient wc = new WebClient();
-            //byte[] bytesFile;
-            //using (MemoryStream stream = new MemoryStream(wc.DownloadData(assessment_link)))
-            //{
-            //    bytesFile = stream.ToArray();
-            //}
-
-            //MessageBox.Show(bytesFile[0].ToString());
-
             if (lbxAssessmentList.SelectedIndex != -1)
             {
                 StackPanel stack = (StackPanel)lbxAssessmentList.SelectedItem;
-                string assessment_link = stack.Tag.ToString();
+                string[] tag = (string[])stack.Tag;
+                string assessment_link = tag[0];
 
                 List<Question> list = new List<Question>();
                 MainPage.assessmentData = new Dictionary<string, string>();
@@ -143,6 +132,7 @@ namespace DBUP
                     mainWindow.btnDiagram.IsEnabled = true;
                     mainWindow.btnResult.IsEnabled = true;
                     mainWindow.btnAssessment.IsEnabled = true;
+                    MainWindow.active_assessment_id = Int32.Parse(tag[1]);
 
                     Assessment assessment = new Assessment(list);
                     mainWindow.frame.NavigationService.Navigate(assessment);

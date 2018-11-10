@@ -43,8 +43,6 @@ namespace DBUP
                 mainWindow.btnResult.IsEnabled = true;
                 mainWindow.btnAssessment.IsEnabled = true;
 
-                
-
                 assessmentData.Add("NameAssessment", tbxNameAssessment.Text);
                 assessmentData.Add("NameObject", tbxNameObject.Text);
                 assessmentData.Add("Address", tbxAddress.Text);

@@ -20,6 +20,9 @@ using System.Security.Cryptography;
 using Newtonsoft.Json;
 using System.Collections.Specialized;
 using xNet;
+using System.Net;
+using System.Collections;
+using System.Reflection;
 
 namespace DBUP
 {
@@ -42,6 +45,7 @@ namespace DBUP
         public static double EV_2;
         public static double EV_3;
         public static double EV_R;
+        public static int active_assessment_id;
 
         public MainWindow()
         {
@@ -69,6 +73,7 @@ namespace DBUP
             btnAssessment.IsEnabled = false;
             btnDiagram.IsEnabled = false;
             btnResult.IsEnabled = false;
+            active_assessment_id = -1;
         }
         public MainWindow(bool from_enter_window = false)
         {
@@ -80,6 +85,7 @@ namespace DBUP
             btnAssessment.IsEnabled = false;
             btnDiagram.IsEnabled = false;
             btnResult.IsEnabled = false;
+            active_assessment_id = -1;
         }
 
         private void About_Click(object sender, RoutedEventArgs e)
@@ -111,6 +117,7 @@ namespace DBUP
                     btnAssessment.IsEnabled = false;
                     btnDiagram.IsEnabled = false;
                     btnResult.IsEnabled = false;
+                    active_assessment_id = -1;
                 }
                 else if (resultQuery == MessageBoxResult.Yes)
                 {
@@ -121,6 +128,7 @@ namespace DBUP
                         btnAssessment.IsEnabled = false;
                         btnDiagram.IsEnabled = false;
                         btnResult.IsEnabled = false;
+                        active_assessment_id = -1;
                     }
                 }
             }
@@ -289,45 +297,40 @@ namespace DBUP
         {
             try
             {
-                //// получим файл оценки в виде массива байт
+                // получим файл оценки в виде массива байт
                 byte[] bytesFile = GetFileAssessment();
 
-                //// создадим соединение
-                //System.Net.WebClient Client = new System.Net.WebClient();
-
-                //// добавим заголовки
-                //Client.Headers.Add("Content-Type", "binary/octet-stream");
-
-                //// составим путь к файлу
+                // составим путь к файлу
                 string path_file = Directory.GetCurrentDirectory() + "temp.dbup";
-
-                //NameValueCollection parameters = new NameValueCollection();
-                //parameters.Add("name", "123");
-                //parameters.Add("val", "xyz");
-
-                //Client.QueryString = parameters;
-
-                //// сохраним на диск
+                
+                // сохраним на диск
                 File.WriteAllBytes(path_file, bytesFile);
 
-                //// загрузим файл
-                //byte[] result = Client.UploadFile(Config.HOST + "/api/?api_method=assessment/tryUpload", "POST", path_file);
-
-                //// получим результат
-                //string result_string = System.Text.Encoding.UTF8.GetString(result, 0, result.Length);
-
-                //MessageBox.Show(result_string);
-
+                // создаем соединение
                 using (var request = new HttpRequest())
                 {
+                    // отправим вместе с файлом дополнительную информацию
                     var multipartContent = new MultipartContent()
                     {
-                        {new StringContent("example"), "file_name"},
+                        {new StringContent(MainPage.assessmentData["NameAssessment"] + " " + MainPage.assessmentData["NameObject"]), "audit_object"},
+                        {new StringContent(MainPage.assessmentData["Address"]), "address"},
+                        {new StringContent(MainWindow.active_assessment_id.ToString()), "assessment_id"},
                         {new FileContent(Directory.GetCurrentDirectory() + "temp.dbup"), "file", "1"}
                     };
 
+                    // инициализируем куки
+                    CookieDictionary cookieDict = new CookieDictionary();
+                    foreach (Cookie cookie in API.cookie.GetCookies(new Uri(Config.HOST)))
+                    {
+                        cookieDict.Add(cookie.Name, cookie.Value);
+                    }
+
+                    // добавляем куки к запросу
+                    request.Cookies = cookieDict;
+                   
                     // Отправляем запрос.
                     HttpResponse response = request.Post(Config.HOST + "/api/?api_method=assessment/tryUpload", multipartContent);
+                    
                     // Принимаем тело сообщения в виде строки.
                     string content = response.ToString();
 
