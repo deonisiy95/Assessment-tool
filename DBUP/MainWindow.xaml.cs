@@ -49,6 +49,10 @@ namespace DBUP
 
         public MainWindow()
         {
+            InitializeComponent();
+            frame.NavigationService.Navigate(new Uri("DocumentBlankPage.xaml", UriKind.Relative));
+
+            return;
             // инициализируем cookie
             API.initCookie();
 
@@ -66,6 +70,8 @@ namespace DBUP
                 enter_window.Show();
 
                 this.Close();
+
+                return;
             }
 
             InitializeComponent();
@@ -81,7 +87,7 @@ namespace DBUP
             API.initCookie();
 
             InitializeComponent();
-            frame.NavigationService.Navigate(new Uri("MainPage.xaml", UriKind.Relative));
+            frame.NavigationService.Navigate(new Uri("ProfilePage.xaml", UriKind.Relative));
             btnAssessment.IsEnabled = false;
             btnDiagram.IsEnabled = false;
             btnResult.IsEnabled = false;

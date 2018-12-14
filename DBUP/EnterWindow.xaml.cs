@@ -176,52 +176,41 @@ namespace DBUP
         private void btnEnter_Click(object sender, RoutedEventArgs e)
         {
 
-            // введеный логин 
-            string login = tbxLogin.Text;
-
-            // веденный пароль
-            string password = pbxPassword.Password;
-
-            // отправляем запрос на сервер
-            string response_str = API.call("auth/tryLogin", new Dictionary<string, string> { { "username", login }, { "password", password } });
-
-            // преобразуем в объект
-            Response<Message> response = JsonConvert.DeserializeObject<Response<Message>>(response_str);
-
-            // если статус ок
-            if (response.status == "ok")
+            try
             {
-                // открываем главное окно
-                MainWindow mainWindow = new MainWindow(true);
-                mainWindow.Show();
+                // введеный логин 
+                string login = tbxLogin.Text;
 
-                // закрываем окно входа
-                this.Close();
-            } else
+                // веденный пароль
+                string password = pbxPassword.Password;
+
+                // отправляем запрос на сервер
+                string response_str = API.call("auth/tryLogin", new Dictionary<string, string> { { "username", login }, { "password", password } });
+
+                // преобразуем в объект
+                Response<Message> response = JsonConvert.DeserializeObject<Response<Message>>(response_str);
+
+                // если статус ок
+                if (response.status == "ok")
+                {
+                    // открываем главное окно
+                    MainWindow mainWindow = new MainWindow(true);
+                    mainWindow.Show();
+
+                    // закрываем окно входа
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Неверный логин/пароль или пользователь не существует", "Внимание", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                }
+            }
+            catch(Exception ex)
             {
-                MessageBox.Show("Неверный логин/пароль или пользователь не существует", "Внимание", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                log.WriteLog(1,ex.Message);
             }
             
-            //HashAlgorithm hashAlgorithm = HashAlgorithm.Create("SHA512");
-            //byte[] passwordBytes = Encoding.UTF8.GetBytes(pbxPassword.Password + tbxLogin.Text);
-            //currentKey = hashAlgorithm.ComputeHash(passwordBytes);
-            //string keyString = BitConverter.ToString(currentKey).Replace("-", "").ToLower();
-
-            //User newUser = new User(, keyString);
-            //if (Contains(newUser))
-            //{
-            //    log.WriteLog(1, tbxLogin.Text);
-            //    MainWindow mainWindow = new MainWindow();
-            //    MainWindow.password = pbxPassword.Password;
-            //    MainWindow.login = tbxLogin.Text;
-            //    mainWindow.Show();
-            //    this.Close();
-            //}
-            //else
-            //{
-            //    log.WriteLog(2);
-            //    MessageBox.Show("Неверный логин/пароль или пользователь не существует", "Внимание", MessageBoxButton.OK, MessageBoxImage.Asterisk);
-            //}
+           
 
         }
 

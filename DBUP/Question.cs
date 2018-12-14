@@ -8,7 +8,7 @@ namespace DBUP
 {
     public class SecondaryOuestion
     {
-        
+
         public int documentation;
         public int execution;
         public bool answered;
@@ -53,7 +53,7 @@ namespace DBUP
             execution = -1;
             value = 0;
             answered = false;
-            secondaryOuestions = new SecondaryOuestion[] {new SecondaryOuestion(),new SecondaryOuestion(),new SecondaryOuestion() };
+            secondaryOuestions = new SecondaryOuestion[] { new SecondaryOuestion(), new SecondaryOuestion(), new SecondaryOuestion() };
         }
         public Question(int _group, int _number, string _question, bool _mandatory, int _category, bool _overlook, int _documentation, int _execution, bool _answered)
         {
@@ -68,6 +68,20 @@ namespace DBUP
             value = 0;
             answered = _answered;
             secondaryOuestions = new SecondaryOuestion[] { new SecondaryOuestion(), new SecondaryOuestion(), new SecondaryOuestion() };
+        }
+    }
+
+    public class DocQuestion {
+
+        public int id { get; set; }
+        public string symbol { get; set; }
+        public string value { get; set; }
+
+        public DocQuestion(int _id, string _symbol, string _value)
+        {
+            id = _id;
+            symbol = _symbol;
+            value = _value;
         }
     }
 }

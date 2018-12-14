@@ -76,6 +76,9 @@
     <Compile Include="Config.cs" />
     <Compile Include="Define.cs" />
     <Compile Include="Diagram.cs" />
+    <Compile Include="DocumentBlankPage.xaml.cs">
+      <DependentUpon>DocumentBlankPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EnterWindow.xaml.cs">
       <DependentUpon>EnterWindow.xaml</DependentUpon>
     </Compile>
@@ -105,6 +108,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Assessment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DocumentBlankPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

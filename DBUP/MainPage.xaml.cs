@@ -42,6 +42,7 @@ namespace DBUP
                 mainWindow.btnDiagram.IsEnabled = true;
                 mainWindow.btnResult.IsEnabled = true;
                 mainWindow.btnAssessment.IsEnabled = true;
+                MainWindow.active_assessment_id = -1;
 
                 assessmentData.Add("NameAssessment", tbxNameAssessment.Text);
                 assessmentData.Add("NameObject", tbxNameObject.Text);
@@ -73,6 +74,7 @@ namespace DBUP
                     mainWindow.btnDiagram.IsEnabled = true;
                     mainWindow.btnResult.IsEnabled = true;
                     mainWindow.btnAssessment.IsEnabled = true;
+                    MainWindow.active_assessment_id = -1;
 
                     Assessment assessment = new Assessment(list);
                     mainWindow.frame.NavigationService.Navigate(assessment);
