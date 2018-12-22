@@ -30,7 +30,7 @@ namespace DBUP
         public string address { get; set; }
     }
 
-    class Assessments
+    public class Assessments
     {
         public int assessment_id { get; set; }
         public string audit_object { get; set; }
@@ -38,5 +38,6 @@ namespace DBUP
         public int auditor_id { get; set; }
         public string assessment_link { get; set; }
         public int created_at { get; set; }
+        public string document_poll { get; set; }
     }
 }

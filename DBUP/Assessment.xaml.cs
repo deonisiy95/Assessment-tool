@@ -285,13 +285,9 @@ namespace DBUP
                     r4.Tag = new int[] { i, 4, indexButton };
                     r4.Checked += new RoutedEventHandler(RadioChekedExecutionCategory1);
 
-
                     stackPanelGroup1.Children.Add(textBlockGroup1);
                     stackPanelGroup1.Children.Add(radio1);
                     stackPanelGroup1.Children.Add(radio2);
-
-
-
 
                     stackPanelGroup2.Children.Add(textBlockGroup2);
                     stackPanelGroup2.Children.Add(r1);

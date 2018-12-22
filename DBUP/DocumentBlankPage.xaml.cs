@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
+using Newtonsoft.Json;
 
 namespace DBUP
 {
@@ -22,9 +23,24 @@ namespace DBUP
     public partial class DocumentBlankPage : Page
     {
         public static List<DocQuestion> document_poll = new List<DocQuestion>();
-        public DocumentBlankPage()
+
+        public static List<int> documents = new List<int>();
+
+        public static Assessments assessment_info;
+        public DocumentBlankPage(Assessments assessment)
         {
             InitializeComponent();
+
+            assessment_info = assessment;
+
+            try
+            {
+                documents = JsonConvert.DeserializeObject<List<int>>(assessment_info.document_poll);
+            }
+            catch (Exception e)
+            {
+
+            }
 
             LoadDocumentQuestion();
 
@@ -33,7 +49,6 @@ namespace DBUP
 
         public void renderBlank()
         {
-
             for (int i = 0; i < document_poll.Count; i ++)
             {
                 DockPanel dockPanel = new DockPanel();
@@ -45,14 +60,13 @@ namespace DBUP
 
                 CheckBox checkBox = new CheckBox()
                 {
-                    IsChecked = false,
-                    //Content = document_poll[i].value
-                    // Tag = new int[] { i, indexButton }
+                    IsChecked = documents.Contains(document_poll[i].id),
+                    Tag = document_poll[i].id
                 };
 
                 TextBlock textBlockSymbol = new TextBlock()
                 {
-                    Text = document_poll[i].symbol,
+                    Text = document_poll[i].symbol.ToString(),
                     TextAlignment = TextAlignment.Center,
                     Width = 30
                 };
@@ -75,9 +89,18 @@ namespace DBUP
                     stackPanel.Children.Add(textBlockQuestion);
                 } else
                 {
-                    stackPanel.Children.Add(checkBox);
-                    stackPanel.Children.Add(textBlockSymbol);
-                    stackPanel.Children.Add(textBlockQuestion);
+                    if (document_poll[i].id == -2)
+                    {
+                        textBlockSymbol.Margin = new Thickness(15, 0, 0, 0);
+                        stackPanel.Children.Add(textBlockSymbol);
+                        stackPanel.Children.Add(textBlockQuestion);
+                    } else
+                    {
+                        checkBox.Name = "check_box_" + document_poll[i].id.ToString();
+                        stackPanel.Children.Add(checkBox);
+                        stackPanel.Children.Add(textBlockSymbol);
+                        stackPanel.Children.Add(textBlockQuestion);
+                    }
                 }
                 
                 checkBox.Checked += new RoutedEventHandler(checkboxCheckedChange);
@@ -86,8 +109,6 @@ namespace DBUP
                 dockPanel.Children.Add(stackPanel);
                 stackPanelBlank.Children.Add(dockPanel);
             }
-          
-    
         }
 
         public void LoadDocumentQuestion()
@@ -123,20 +144,38 @@ namespace DBUP
             }
         }
 
-
-
-            void checkboxCheckedChange(object sender, RoutedEventArgs e)
+        void checkboxCheckedChange(object sender, RoutedEventArgs e)
         {
             CheckBox checkBox = (CheckBox)sender;
-            int[] tag = (int[])checkBox.Tag;
-            int i = tag[0];
-            int indexButton = tag[1];
-            Button secondaryButton = (Button)FindName("btn_" + i + "_" + indexButton);
-            Button button = (Button)FindName("btn_" + i);
-            Grid g = (Grid)FindName("grid" + i);
+            int id_document = (int)checkBox.Tag;
 
+            if (checkBox.IsChecked == true)
+            {
+                documents.Add(id_document);
+            } else
+            {
+                documents.Remove(id_document);
+            }
+        }
 
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            string document_poll_string = "[" + string.Join(",", documents) + "]";
 
+            Dictionary<string, string> post_data = new Dictionary<string, string>();
+            post_data.Add("document_poll", document_poll_string);
+            post_data.Add("assessment_id", assessment_info.assessment_id.ToString());
+
+            API.call("assessment/setDocument", post_data);
+            
+            MessageBox.Show("Сохранено");
+        }
+
+        private void btnBack_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow mainWindow = (MainWindow)DBUP.App.Current.Windows[0];
+
+            mainWindow.frame.NavigationService.Navigate(new Uri("ProfilePage.xaml", UriKind.Relative));
         }
     }
 }

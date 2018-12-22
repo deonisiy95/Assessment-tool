@@ -8,11 +8,27 @@
       d:DesignHeight="470" d:DesignWidth="1000"
       Title="DocumentBlankPage">
 
+    <Page.Resources>
+        <ControlTemplate x:Key="ButtonTemplateCorner" TargetType="Button">
+            <Border Name="border"  CornerRadius="3"  Background="#CBE6E0" BorderBrush="#578E84" BorderThickness="3">
+                <ContentPresenter  RecognizesAccessKey="True" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter TargetName="border" Property="Background" Value="#6DB2A5"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </Page.Resources>
+
     <Grid>
-        <ScrollViewer  Grid.Column="1"  Margin="25,25,25,25" Background="White">
-            <StackPanel Name="stackPanelBlank" Margin="10">
-                
+        <ScrollViewer  Margin="25,25,25,50" Background="White">
+            <StackPanel Name="stackPanelBlank" Margin="10" Orientation="Vertical">
             </StackPanel>
+
         </ScrollViewer>
+        <Button x:Name="btnSave" Foreground="#303030" Height="30" HorizontalAlignment="Right" Margin="0,0,50,10" VerticalAlignment="Bottom" Width="165" Content="Сохранить" Template="{StaticResource ButtonTemplateCorner}" Click="btnSave_Click"></Button>
+        <Button x:Name="btnBack" Foreground="#303030" Height="30" HorizontalAlignment="Right" Margin="0,0,230,10" VerticalAlignment="Bottom" Width="165" Content="Назад" Template="{StaticResource ButtonTemplateCorner}" Click="btnBack_Click"></Button>
+
     </Grid>
 </Page>

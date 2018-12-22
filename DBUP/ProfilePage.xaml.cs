@@ -23,6 +23,7 @@ namespace DBUP
     /// </summary>
     public partial class ProfilePage : Page
     {
+        static List<Assessments> assessment_info_list = new List<Assessments>();
         public ProfilePage()
         {
             InitializeComponent();
@@ -50,8 +51,10 @@ namespace DBUP
             // преобразуем в объект
             Response<List<Assessments>> r = JsonConvert.DeserializeObject<Response<List<Assessments>>>(response_str);
 
+            assessment_info_list = r.response;
+
             // заполним поля
-            for(int i = 0; i < r.response.Count; i++)
+            for (int i = 0; i < r.response.Count; i++)
             {
                 AddToListBox(r.response[i].audit_object, r.response[i].assessment_link, r.response[i].assessment_id);
             }
@@ -115,32 +118,64 @@ namespace DBUP
         private void btnSelectFile_Click(object sender, RoutedEventArgs e)
         {
 
-            if (lbxAssessmentList.SelectedIndex != -1)
+            try
             {
-                StackPanel stack = (StackPanel)lbxAssessmentList.SelectedItem;
-                string[] tag = (string[])stack.Tag;
-                string assessment_link = tag[0];
-
-                List<Question> list = new List<Question>();
-                MainPage.assessmentData = new Dictionary<string, string>();
-                Assessment.answeredGroup = new int[34];
-
-                if (MainPage.OpenQuestions(ref list, assessment_link, true))
+                if (lbxAssessmentList.SelectedIndex != -1)
                 {
-                   
-                    MainWindow mainWindow = (MainWindow)DBUP.App.Current.Windows[0];
-                    mainWindow.btnDiagram.IsEnabled = true;
-                    mainWindow.btnResult.IsEnabled = true;
-                    mainWindow.btnAssessment.IsEnabled = true;
-                    MainWindow.active_assessment_id = Int32.Parse(tag[1]);
+                    StackPanel stack = (StackPanel)lbxAssessmentList.SelectedItem;
+                    string[] tag = (string[])stack.Tag;
+                    string assessment_link = tag[0];
+                    int assessment_id = int.Parse(tag[1]);
+                    Assessments assessment_info = null;
 
-                    Assessment assessment = new Assessment(list);
-                    mainWindow.frame.NavigationService.Navigate(assessment);
+                    for (int i = 0; i < assessment_info_list.Count(); i++)
+                    {
+                        if (assessment_info_list[i].assessment_id == assessment_id)
+                        {
+                            assessment_info = assessment_info_list[i];
+                            break;
+                        }
+                    }
+
+                    if (assessment_info != null)
+                    {
+                        MainWindow mainWindow = (MainWindow)DBUP.App.Current.Windows[0];
+                        mainWindow.btnDiagram.IsEnabled = true;
+                        mainWindow.btnResult.IsEnabled = true;
+                        mainWindow.btnAssessment.IsEnabled = true;
+                        MainWindow.active_assessment_id = Int32.Parse(tag[1]);
+
+                        DocumentBlankPage documentBlankPage = new DocumentBlankPage(assessment_info);
+                        mainWindow.frame.NavigationService.Navigate(documentBlankPage);
+
+                        return;
+                    }
+
+                    List<Question> list = new List<Question>();
+                    MainPage.assessmentData = new Dictionary<string, string>();
+                    Assessment.answeredGroup = new int[34];
+
+                    if (MainPage.OpenQuestions(ref list, assessment_link, true))
+                    {
+
+                        MainWindow mainWindow = (MainWindow)DBUP.App.Current.Windows[0];
+                        mainWindow.btnDiagram.IsEnabled = true;
+                        mainWindow.btnResult.IsEnabled = true;
+                        mainWindow.btnAssessment.IsEnabled = true;
+                        MainWindow.active_assessment_id = Int32.Parse(tag[1]);
+
+                        Assessment assessment = new Assessment(list);
+                        mainWindow.frame.NavigationService.Navigate(assessment);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Выберите оценку", "Внимание", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Выберите оценку", "Внимание", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(ex.Message);
             }
         }
     }

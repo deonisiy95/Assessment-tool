@@ -50,9 +50,7 @@ namespace DBUP
         public MainWindow()
         {
             InitializeComponent();
-            frame.NavigationService.Navigate(new Uri("DocumentBlankPage.xaml", UriKind.Relative));
-
-            return;
+           
             // инициализируем cookie
             API.initCookie();
 
